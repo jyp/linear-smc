@@ -12,7 +12,6 @@
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -65,33 +64,12 @@ juggleUp :: (con ~ Obj cat, TensorClosed con, DualClosed con, AutonomousObj con,
   => v `cat` Dual v
 juggleUp = compactHelper1 metric
 
-doubleDual :: (Autonomous k, Obj k ~ con, TensorClosed con, DualClosed con, con a, con ()) => a `k` Dual (Dual a)
-doubleDual = unitor' ∘ swap ∘ ((turn') × id) ∘ assoc' ∘ (id × (swap ∘ turn)) ∘ unitor
-
-doubleDual' :: (Autonomous k, Obj k ~ con,  DualClosed con, TensorClosed con, con a, con ()) => Dual (Dual a) `k` a 
-doubleDual' = unitor' ∘ (id × turn') ∘ assoc ∘ ((swap ∘ turn) × id) ∘ swap ∘ unitor
-
-compactHelper0 :: (Autonomous k, Obj k ~ con, TensorClosed con, DualClosed con, AutonomousObj con, con a, con b, con ()) => k a b -> k (Dual b) (Dual a)
-compactHelper0 f = unitor' ∘ (id × turn') ∘ assoc ∘ ((id × f) × id) ∘ (turn × id) ∘ swap ∘ unitor
-
 compactHelper1 :: (Autonomous k, Obj k ~ con, DualClosed con, TensorClosed con, con a, con b, con ()) => k (a ⊗ b) () -> k a (Dual b)
 compactHelper1 f = unitor' ∘ (id × f) ∘ assoc . (swap × id) . assoc' . (id × turn) ∘ unitor
 
 compactHelper2 :: (Autonomous k, Obj k ~ con, DualClosed con, TensorClosed con, con a, con b, con ()) => k () (a ⊗ b) -> k (Dual a) b
 compactHelper2 f = unitor' ∘ swap ∘ ((turn' ∘ swap) × id) ∘ assoc' ∘ (id × f) ∘ unitor
 
-compactHelper3 :: (Autonomous k, Obj k ~ con, TensorClosed con, DualClosed con, AutonomousObj con, con a, con b, con ()) => k a b -> k (a ⊗ Dual b) ()
-compactHelper3 f = turn' ∘ (f × id)
-
-
-metricHelp1 :: (Autonomous k, Obj k ~ con, DualClosed con, TensorClosed con, con a, con b, con ()) => k ((Dual a ⊗ Dual b) ⊗ (a ⊗ b)) ()
-metricHelp1 = turn' ∘ swap ∘ (id × (unitor' ∘ swap ∘ ((turn' ∘ swap) × id) ∘ assoc')) ∘ assoc ∘ (swap × id)
-
-metricHelp2 :: (Autonomous k, Obj k ~ con, DualClosed con, TensorClosed con, con a, con b, con ()) => k () ((a ⊗ b) ⊗ (Dual a ⊗ Dual b))
-metricHelp2 = (swap × id) ∘ assoc' ∘ (id × (assoc ∘ ((swap ∘ turn) × id) ∘ swap ∘ unitor)) ∘ swap ∘ turn
-
-dualHelp2 :: (Autonomous k, Obj k ~ con, DualClosed con, TensorClosed con, con a, con b, con ()) => k (Dual (a ⊗ b)) (Dual a ⊗ Dual b)
-dualHelp2 = compactHelper2 metricHelp2
 
 shuf ::
   ( Monoidal k

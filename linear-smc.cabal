@@ -74,7 +74,8 @@ library
     other-modules:
       Control.Category.FreeSMC
       Control.Category.FreeCartesian
-
+      Control.Category.Linear.Internal
+      Control.Category.StructuredObject
     -- Modules included in this library but not exported.
     -- other-modules:
 
@@ -83,8 +84,8 @@ library
 
     -- Other library packages from which modules are imported.
     build-depends: constraints >= 0.13.4 && < 666
-    build-depends: array
-    build-depends:    base ^>=4.16.4.0
+    build-depends: array >= 0.5 && < 666
+    build-depends:    base >=4.16.4.0 && < 666
 
     -- Directories containing source files.
     hs-source-dirs:   .
