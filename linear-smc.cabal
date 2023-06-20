@@ -20,7 +20,7 @@ name:               linear-smc
 -- PVP summary:     +-+------- breaking API changes
 --                  | | +----- non-breaking API additions
 --                  | | | +--- code changes with no API change
-version:            2.2.2
+version:            2.2.3
 
 -- A short (one-line) description of the package.
 synopsis:       Build SMC morphisms using linear types
@@ -34,7 +34,7 @@ description:
   This library
   allows one to program SMCs with linear functions instead of SMC
   combinators. This is done without resorting to template haskell or compiler plugins.
-  The rationale, design and implementation of this library is provided by the paper  "Evaluating Linear Functions to Symmetric Monoidal Categories", by Jean-Philippe Bernardy and Arnaud Spiwack, appearing at Haskell Symposium 2021.
+  The rationale and design of this library is provided by the paper  "Evaluating Linear Functions to Symmetric Monoidal Categories", by Jean-Philippe Bernardy and Arnaud Spiwack, appearing at Haskell Symposium 2021. This implementation provides additionally: a much improved implementation as well as an interface specifically tailored towards tensor calculus and compact-closed categories in general.
 
 -- The license under which the package is released.
 license:            LGPL-3.0-or-later
