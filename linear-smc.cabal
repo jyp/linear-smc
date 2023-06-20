@@ -53,9 +53,6 @@ maintainer:         jeanphilippe.bernardy@gmail.com
 category:           Math
 build-type:         Simple
 
--- Extra doc files to be distributed with the package, such as a CHANGELOG or a README.
-extra-doc-files:    CHANGELOG.md
-
 -- Extra source files to be distributed with the package, such as examples, or a tutorial module.
 -- extra-source-files:
 
