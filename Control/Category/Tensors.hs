@@ -24,8 +24,7 @@ module Control.Category.Tensors (R,
                                  constant, zeroTensor, delta, contract, deriv, juggleDown, juggleUp, plus, (⋆),
                                  tensorEval, tensorEval1, tensorEmbed, tensorEmbed1,
                                  affinity, derivUsingAffinity,
-
-                                 TensorCategory(..), CoordinateCategory(..), AutonomousObj(..),
+                                 ConnectionCategory(..),MetricCategory(..), CoordinateCategory(..), AutonomousObj(..),
                                  Group(..), VectorSpace(..), Dual(..)) where
 
 import Data.Kind
@@ -48,19 +47,16 @@ type DualClosed (con :: Type -> Constraint) =
   forall x. (con x) => con (Dual x) :: Constraint
 
 
-class Autonomous cat => TensorCategory v cat where
-  metric          :: {-<-}(O2 cat v Unit) =>{->-} (v ⊗ v) `cat` Unit
-  cometric        :: {-<-}(O2 cat v Unit) =>{->-} Unit `cat` (v ⊗ v)
-  derivSemantics  :: {-<-}O3 cat a b v =>{->-} (a `cat` b) -> ((v ⊗ a) `cat` b)
-  default derivSemantics  :: {-<-}(O3 cat a b v, Obj cat ~ con, TensorClosed con, GroupCat cat, v ~ Atom s, OO s a, OO s b, CoordinateCategory v cat, con ()) =>{->-} (a `cat` b) -> ((v ⊗ a) `cat` b)
-  derivSemantics = derivUsingAffinity
+class Autonomous cat => MetricCategory cat where
+  type LocalSpace cat
+  metric          :: {-<-}(O2 cat (LocalSpace cat) Unit) =>{->-} (LocalSpace cat ⊗ LocalSpace cat) `cat` Unit
+  cometric        :: {-<-}(O2 cat (LocalSpace cat) Unit) =>{->-} Unit `cat` (LocalSpace cat ⊗ LocalSpace cat){-<-}
 
-
-juggleDown :: (con ~ Obj cat, TensorClosed con, DualClosed con, AutonomousObj con, TensorCategory v cat, con v, con ())
+juggleDown :: (v ~ LocalSpace cat, con ~ Obj cat, TensorClosed con, DualClosed con, AutonomousObj con, MetricCategory cat, con v, con ())
   => Dual v `cat` v
 juggleDown = compactHelper2 cometric
 
-juggleUp :: (con ~ Obj cat, TensorClosed con, DualClosed con, AutonomousObj con, TensorCategory v cat, con v, con ())
+juggleUp :: (v ~ LocalSpace cat, con ~ Obj cat, TensorClosed con, DualClosed con, AutonomousObj con, MetricCategory cat, con v, con ())
   => v `cat` Dual v
 juggleUp = compactHelper1 metric
 
@@ -80,16 +76,22 @@ shuf ::
 shuf = assoc ∘ (swap × id) ∘ assoc'
 
 
+class MetricCategory cat => ConnectionCategory cat where
+  connection  :: {-<-}O3 cat a b (LocalSpace cat) =>{->-} (a `cat` b) -> ((LocalSpace cat ⊗ a) `cat` b)
+  default connection  :: {-<-}(O3 cat a b (LocalSpace cat), Obj cat ~ con, TensorClosed con, GroupCat cat, LocalSpace cat ~ Atom s, OO s a, OO s b, CoordinateCategory cat, con ()) =>{->-} (a `cat` b) -> ((LocalSpace cat ⊗ a) `cat` b)
+  connection = derivUsingAffinity
 
-class TensorCategory v cat => CoordinateCategory v cat  where
+class MetricCategory cat => CoordinateCategory cat  where
   partialDerivative :: O3 cat a b v => (a `cat` b) -> ((v ⊗ a) `cat` b)
-  christoffel     :: {-<-}(Obj cat v)=>{->-} (v ⊗ v) `cat` v
+
+christoffel     :: {-<-}(Obj cat v, CoordinateCategory cat, v ~ LocalSpace cat)=>{->-} (v ⊗ v) `cat` v
+christoffel = _
 
 
 derivUsingAffinity :: forall a b v s k con.
-  (AutonomousObj con, TensorClosed con, OO s a, OO s b, v ~ Atom s,
+  (v ~ LocalSpace k, AutonomousObj con, TensorClosed con, OO s a, OO s b, v ~ Atom s,
    con a, con b, con v, con (),
-   GroupCat k, CoordinateCategory v k, Obj k ~ con )
+   GroupCat k, CoordinateCategory k, Obj k ~ con )
   => k a b -> k (v ⊗ a) b
 derivUsingAffinity t = partialDerivative t + negate (t ∘ affinity) + (affinity ∘ (id × t))
 
@@ -119,8 +121,8 @@ Compose t1 q1  ⋆- Compose t2 q2  = Compose (unitor' ∘ (t1 × t2)) (q1 ▴ q2
 Plus f         ⋆- t              = Plus (\c -> f c ⋆- t)
 t              ⋆- Plus f         = Plus (\c -> t ⋆- f c)
 
-deriv'         :: {-<-} forall v cat con r. (con v, TensorClosed con, con ~ Obj cat, con r, con (), Monoidal cat, ProdObj con) =>{->-} (TensorCategory v cat) => P cat r v ⊸ S cat r ⊸ S cat r
-deriv'  (Y i)  (Compose t q)  = Compose (derivSemantics t) (i ▴ q)
+deriv'         :: {-<-} forall v cat con r. (v ~ LocalSpace cat, con v, TensorClosed con, con ~ Obj cat, con r, con (), Monoidal cat, ProdObj con) =>{->-} (ConnectionCategory cat) => P cat r v ⊸ S cat r ⊸ S cat r
+deriv'  (Y i)  (Compose t q)  = Compose (connection t) (i ▴ q)
 deriv'  p      (Plus f )      = Plus (\c -> deriv' p (f c) )
 
 
@@ -172,7 +174,7 @@ delta         :: {-<-}(Autonomous cat, TensorClosed obj, DualClosed obj, Obj cat
 contract :: {-<-}(Autonomous cat, con ~ Obj cat, con a, con r, con (), con (Dual a), TensorClosed con, DualClosed con) => {->-}(P cat r (Dual a) ⊸ P cat r a ⊸ R cat r) ⊸ R cat r
 contract f u = uncurry (uncurry f) (encode ((turn × id) . unitor) u) 
 
-deriv         :: {-<-}forall v cat con r.  (con v, TensorClosed con, con ~ Obj cat, con r, con (), Monoidal cat, ProdObj con) =>{->-} (TensorCategory v cat) => P cat r v ⊸ R cat r ⊸ R cat r
+deriv         :: {-<-}forall v cat con r.  (v ~ LocalSpace cat, con v, TensorClosed con, con ~ Obj cat, con r, con (), Monoidal cat, ProdObj con) =>{->-} (ConnectionCategory cat) => P cat r v ⊸ R cat r ⊸ R cat r
 
 uncurry   :: (Monoidal cat {-<-} , O3 cat r a b, con (), TensorClosed con, con ~ Obj cat{->-})  =>  (P cat r a ⊸ P cat r b ⊸ k) ⊸ (P cat r (a⊗b) ⊸ k)
 uncurry f p = split p & \case (a,b) -> f a b
@@ -182,16 +184,16 @@ x & f = f x
 
 
 affinity :: forall v a s k con.
-            (con ~ Obj k, OO s a, con a, con v, con (), v ~ Atom s,
+            (v ~ LocalSpace k, con ~ Obj k, OO s a, con a, con v, con (), v ~ Atom s,
              TensorClosed con, AutonomousObj con, GroupCat k,
-             TensorCategory (Atom s) k,CoordinateCategory (Atom s) k)
+             MetricCategory k,CoordinateCategory k)
          => k (Atom s ⊗ a) a
 affinity = aff getRepr
 
 aff :: forall s k con a.
-       (con ~ Obj k, con a, con (Atom s), con (),
-        TensorClosed con, AutonomousObj con, TensorCategory (Atom s) k,
-        GroupCat k, CoordinateCategory (Atom s) k)
+       (con ~ Obj k, con a, con (Atom s), con (), Atom s ~ LocalSpace k,
+        TensorClosed con, AutonomousObj con, MetricCategory k,
+        GroupCat k, CoordinateCategory k)
     => Repr s a -> k (Atom s ⊗ a) a
 aff = \case
   RAtom -> christoffel
