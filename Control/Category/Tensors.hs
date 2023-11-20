@@ -83,9 +83,9 @@ class MetricCategory cat => ConnectionCategory cat where
 
 class MetricCategory cat => CoordinateCategory cat  where
   partialDerivative :: O3 cat a b v => (a `cat` b) -> ((v ⊗ a) `cat` b)
+  christoffel ::  (LocalSpace cat ⊗ LocalSpace cat) `cat` LocalSpace cat
 
-christoffel     :: {-<-}(Obj cat v, CoordinateCategory cat, v ~ LocalSpace cat)=>{->-} (v ⊗ v) `cat` v
-christoffel = _
+-- christoffelDefault     :: {-<-}(Obj cat v, CoordinateCategory cat, v ~ LocalSpace cat)=>{->-} (v ⊗ v) `cat` v
 
 
 derivUsingAffinity :: forall a b v s k con.
