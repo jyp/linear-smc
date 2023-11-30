@@ -76,7 +76,7 @@ instance HasShow Sho where
 instance Read (Sho a b) where
   readsPrec _ x = [(Sho $ \_ -> (x++), "")] 
 
--- instance TensorCategory v Sho where
+-- instance MetricCategory v Sho where
 --   metric = (shoCon ("g"))
 --   cometric =  shoCon ("g'")
 --   christoffel =  shoCon ("Γ")
@@ -85,4 +85,4 @@ instance Read (Sho a b) where
 --   partialDerivative  (Sho f) = Sho $ \d -> showParen (d>2) (showString "∂" . (f 2))
 
 -- instance HasDerivative v Sho where
---   derivSemantics (Sho f) = Sho $ \d -> showParen (d>2) (showString "∇" . (f 2))
+--   connection (Sho f) = Sho $ \d -> showParen (d>2) (showString "∇" . (f 2))

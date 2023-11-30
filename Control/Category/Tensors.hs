@@ -49,8 +49,11 @@ type DualClosed (con :: Type -> Constraint) =
 
 class Autonomous cat => MetricCategory cat where
   type LocalSpace cat
-  metric          :: {-<-}(O2 cat (LocalSpace cat) Unit) =>{->-} (LocalSpace cat ⊗ LocalSpace cat) `cat` Unit
-  cometric        :: {-<-}(O2 cat (LocalSpace cat) Unit) =>{->-} Unit `cat` (LocalSpace cat ⊗ LocalSpace cat){-<-}
+  metric          :: {-<-}(O2 cat (LocalSpace cat) Unit) =>{->-} ((LocalSpace cat) ⊗ (LocalSpace cat)) `cat` Unit
+  cometric        :: {-<-}(O2 cat (LocalSpace cat) Unit) =>{->-} Unit `cat` ((LocalSpace cat) ⊗ (LocalSpace cat))
+  connection  :: {-<-}O3 cat a b (LocalSpace cat) =>{->-} (a `cat` b) -> (((LocalSpace cat) ⊗ a) `cat` b)
+  default connection  :: {-<-}(O3 cat a b (LocalSpace cat), Obj cat ~ con, TensorClosed con, GroupCat cat, (LocalSpace cat) ~ Atom s, OO s a, OO s b, CoordinateCategory (LocalSpace cat) cat, con ()) =>{->-} (a `cat` b) -> (((LocalSpace cat) ⊗ a) `cat` b)
+  connection = derivUsingAffinity
 
 juggleDown :: (v ~ LocalSpace cat, con ~ Obj cat, TensorClosed con, DualClosed con, AutonomousObj con, MetricCategory cat, con v, con ())
   => Dual v `cat` v
