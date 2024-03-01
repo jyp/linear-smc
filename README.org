@@ -1,0 +1,12 @@
+* linear-smc
+Linear Types, Symmetric Monoidal Categories, and Tensors
+
+* 2023-12-05: Submitted "Domain-Specific Tensor Languages" to JFP
++ Pre-print on arXiv: https://arxiv.org/abs/2312.02664
+
+* 2024-03-01: Talk: Tensors DSLs and Curved Space-Time [Patrik Jansson]
++ [[file:ref/Jansson_2024-03-01_TensorDSL_CurvedSpaceTime.pdf][Slides]]
+
+** Abstract:
+Tensor calculus uses a terse but effective language for expressing physical laws. It was instrumental already a century ago in the formulation of Einstein's general relativity, and its usage has spread to many areas of science. We use category theory, linear types, and algebraic simplifications to implement two tensor DSLs embedded in Haskell, and the conversions between them. We also provide helper functions to view the tensors in Einstein index notation and as diagrams. As an example we express Einstein's General Relativity equation for the curvature of space-time and verify that the Schwarzschild metric tensor is a solution.
+
