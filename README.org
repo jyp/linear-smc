@@ -5,12 +5,30 @@ Linear Types, Symmetric Monoidal Categories, and Tensors
 + Authors: Jean-Philippe Bernardy, Arnaud Spiwack
 + https://doi.org/10.1145/3462282
 
-** 2023-12-05: Submitted "Domain-Specific Tensor Languages" to JFP
+** 2023-12-05: Submitted "Domain-Specific Tensor Languages" to JFP [published 2025-03-12 - see below]
 + Pre-print on arXiv: https://arxiv.org/abs/2312.02664
 
 ** 2024-03-01: Talk: Tensors DSLs and Curved Space-Time [Patrik Jansson]
-+ [[file:ref/Jansson_2024-03-01_TensorDSL_CurvedSpaceTime.pdf][Slides]]
++ [[file:ref/Jansson_2024-03-01_TensorDSL_CurvedSpaceTime.pdf][Slides]], [[https://youtu.be/81XurNlv5cw][YouTube video]]
 
 *** Abstract:
 Tensor calculus uses a terse but effective language for expressing physical laws. It was instrumental already a century ago in the formulation of Einstein's general relativity, and its usage has spread to many areas of science. We use category theory, linear types, and algebraic simplifications to implement two tensor DSLs embedded in Haskell, and the conversions between them. We also provide helper functions to view the tensors in Einstein index notation and as diagrams. As an example we express Einstein's General Relativity equation for the curvature of space-time and verify that the Schwarzschild metric tensor is a solution.
 
+** 2025-03-12: Paper published in J. of Functional Programming
++ https://doi.org/10.1017/S0956796825000048
+
+#+BEGIN_SRC bibtex
+@article{BERNARDY_JANSSON_2025,
+  title   = {Domain-specific tensor languages},
+  author  = {Bernardy, Jean-Philippe and Jansson, Patrik},
+  journal = {Journal of Functional Programming},
+  volume  = {35},
+  year    = {2025},
+  pages   = {e9},
+  doi     = {10.1017/S0956796825000048}
+}
+#+END_SRC
+
+** 2025-10-14: Paper presented at ICFP 2025
++ [[https://patrikja.owlstown.net/posts/4598-talk-domain-specific-tensor-languages][Blog post]], [[https://www.cse.chalmers.se/~patrikj/talks/2025-10_Jansson_Tensors.pdf][slides]]
++ [[https://icfp25.sigplan.org/details/icfp-2025-jfp-first-papers/4/Domain-specific-tensor-languages][Paper/talk page at ICFP]]
